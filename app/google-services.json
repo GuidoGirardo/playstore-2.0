@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "707615683941",
+    "project_id": "playstore20-be62c",
+    "storage_bucket": "playstore20-be62c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707615683941:android:94ec9637cd5a45406a9d8c",
+        "android_client_info": {
+          "package_name": "com.guido.playstore20"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjQNk-ucqJ5DGBR_tAgcViMhwmM4XgDZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
