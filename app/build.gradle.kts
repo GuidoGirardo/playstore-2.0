@@ -79,5 +79,7 @@ dependencies {
     // live data
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
+    // glide
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
 }
