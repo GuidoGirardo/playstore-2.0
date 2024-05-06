@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.guido.playstore20.screens.HomeScreen
+import com.guido.playstore20.screens.ProfileScreen
 import com.guido.playstore20.viewmodel.PlaystoreViewModel
 
 @Composable
@@ -14,6 +15,9 @@ fun AppNavigation(viewModel: PlaystoreViewModel){
     NavHost(navController = navController, startDestination = AppScreens.HomeScreen.route) {
         composable(route = AppScreens.HomeScreen.route) {
             HomeScreen(navController, viewModel)
+        }
+        composable(route = AppScreens.ProfileScreen.route) {
+            ProfileScreen(navController, viewModel)
         }
     }
 
