@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,77 +32,95 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.guido.playstore20.navigation.AppScreens
 import com.guido.playstore20.viewmodel.PlaystoreViewModel
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel) {
 
     val appsList by viewModel.appsList.observeAsState(emptyList())
+    var searchText by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        LazyColumn {
-            items(appsList) { post ->
-                val apk = post["apk"]?.toString() ?: ""
-                val capturas = (post["capturas"] as? List<String>) ?: emptyList()
-                val categoria = post["categoria"]?.toString() ?: ""
-                val comentarios = (post["comentarios"] as? List<String>) ?: emptyList()
-                val descargas = post["descargas"]?.toString() ?: ""
-                val descripcion = post["descripcion"]?.toString() ?: ""
-                val logo = post["logo"]?.toString() ?: ""
-                val titulo = post["titulo"]?.toString() ?: ""
-                val empresa = post["empresa"]?.toString() ?: ""
+        Column() {
+            TextField(
+                value = searchText,
+                onValueChange = { newValue ->
+                    searchText = newValue
+                    viewModel.searchApp(newValue)
+                },
+                label = { Text("search") },
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn {
+                items(appsList) { post ->
+                    val apk = post["apk"]?.toString() ?: ""
+                    val capturas = (post["capturas"] as? List<String>) ?: emptyList()
+                    val categoria = post["categoria"]?.toString() ?: ""
+                    val comentarios = (post["comentarios"] as? List<String>) ?: emptyList()
+                    val descargas = post["descargas"]?.toString() ?: ""
+                    val descripcion = post["descripcion"]?.toString() ?: ""
+                    val logo = post["logo"]?.toString() ?: ""
+                    val titulo = post["titulo"]?.toString() ?: ""
+                    val empresa = post["empresa"]?.toString() ?: ""
 
-                Log.i(
-                    "xd",
-                    "$apk - $capturas - $categoria - $comentarios - " +
-                            "$descargas - $descripcion - $logo - $titulo"
-                )
-
-                var isExpanded by remember { mutableStateOf(false) }
-
-                if (isExpanded) {
-                    appItemApretado(
-                        onClick = { isExpanded = false },
-                        titulo = titulo,
-                        descripcion = descripcion,
-                        descargas = descargas,
-                        logo = logo,
-                        categoria = categoria,
-                        empresa = empresa,
-                        capturas = capturas,
-                        comentarios = comentarios
+                    Log.i(
+                        "xd",
+                        "$apk - $capturas - $categoria - $comentarios - " +
+                                "$descargas - $descripcion - $logo - $titulo"
                     )
-                } else {
-                    appItem(
-                        titulo = titulo,
-                        descripcion = descripcion,
-                        descargas = descargas,
-                        logo = logo,
-                        categoria = categoria,
-                        onClick = { isExpanded = true }
-                    )
+
+                    var isExpanded by remember { mutableStateOf(false) }
+
+                    if (isExpanded) {
+                        appItemApretado(
+                            onClick = { isExpanded = false },
+                            titulo = titulo,
+                            descripcion = descripcion,
+                            descargas = descargas,
+                            logo = logo,
+                            categoria = categoria,
+                            empresa = empresa,
+                            capturas = capturas,
+                            comentarios = comentarios
+                        )
+                    } else {
+                        appItem(
+                            titulo = titulo,
+                            descripcion = descripcion,
+                            descargas = descargas,
+                            logo = logo,
+                            categoria = categoria,
+                            onClick = { isExpanded = true }
+                        )
+                    }
                 }
             }
-        }
 
-        Icon(
-            imageVector = Icons.Default.Person, // Icono predeterminado de perfil de Android
-            contentDescription = "profile icon", // Descripción del contenido para accesibilidad
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .background(Color.Yellow)
-                .clickable { /* Acción al hacer clic */ }
-        )
-    }
+        }
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "profile button",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+                    .size(72.dp)
+                    .background(Color.Yellow, RoundedCornerShape(50.dp))
+                    .scale(0.8f)
+                    .clickable { navController.navigate(AppScreens.ProfileScreen.route) }
+            )
+        }
 
 }
 
