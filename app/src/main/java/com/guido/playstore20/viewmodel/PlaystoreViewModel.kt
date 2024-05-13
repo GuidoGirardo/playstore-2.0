@@ -17,6 +17,7 @@ class PlaystoreViewModel: ViewModel() {
 
     init {
         getApps { apps ->
+            allApps.clear()
             allApps.addAll(apps)
             _appsList.value = allApps
         }
@@ -31,8 +32,8 @@ class PlaystoreViewModel: ViewModel() {
         _appsList.value = filteredApps
     }
 
-    fun uploadAppViewModel(apkUri: Uri, context: Context){
-        uploadApp(apkUri, context)
+    fun uploadAppViewModel(apkUri: Uri, context: Context, title: String, description: String, logo: Uri){
+        uploadApp(apkUri, context, title, description, logo)
     }
 
 }

@@ -1,9 +1,6 @@
 package com.guido.playstore20.screens
 
-import android.content.Context
 import android.net.Uri
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -43,9 +40,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.google.android.gms.tasks.Task
-import com.google.firebase.Firebase
-import com.google.firebase.storage.storage
 import com.guido.playstore20.navigation.AppScreens
 import com.guido.playstore20.ui.theme.Purple40
 import com.guido.playstore20.ui.theme.contraste
@@ -114,15 +108,14 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
 
                 Box(
                     modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp)
+                        .width(80.dp)
+                        .height(80.dp)
                         .background(Color.Red, RoundedCornerShape(8.dp))
                         .clickable {
                             logoLauncher.launch("image/*")
                         }
                 ) {
                     logo?.let { uri ->
-                        // Si se ha seleccionado una imagen, muestra la imagen
                         Image(
                             painter = rememberAsyncImagePainter(uri),
                             contentDescription = "logo",
@@ -149,7 +142,7 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                 horizontalArrangement = Arrangement.End
             ) {
                 if (apkUri != null && logo != null && title != "" && description != "") {
-                    Button(onClick = { viewModel.uploadAppViewModel(apkUri!!, context) }) {
+                    Button(onClick = { viewModel.uploadAppViewModel(apkUri!!, context, title, description, logo!!) }) {
                         Text(text = "upload")
                     }
                 }
