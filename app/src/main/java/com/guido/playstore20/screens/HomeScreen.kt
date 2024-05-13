@@ -1,5 +1,8 @@
 package com.guido.playstore20.screens
 
+import android.app.DownloadManager
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,7 +47,7 @@ import com.guido.playstore20.ui.theme.contraste
 import com.guido.playstore20.viewmodel.PlaystoreViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel) {
+fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel, context: Context) {
 
     val appsList by viewModel.appsList.observeAsState(emptyList())
     var searchText by remember { mutableStateOf("") }
@@ -98,7 +101,10 @@ fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                             categoria = categoria,
                             empresa = empresa,
                             capturas = capturas,
-                            comentarios = comentarios
+                            comentarios = comentarios,
+                            apk = apk,
+                            viewModel = viewModel,
+                            context = context
                         )
                     } else {
                         appItem(
@@ -186,7 +192,10 @@ fun appItemApretado(
     categoria: String,
     onClick: () -> Unit,
     empresa: String,
-    comentarios: List<String>
+    comentarios: List<String>,
+    apk: String,
+    viewModel: PlaystoreViewModel,
+    context: Context
 ) {
     Card(
         modifier = Modifier
@@ -225,7 +234,9 @@ fun appItemApretado(
                 ) {
                     Text(descargas)
                     Button(
-                        onClick = { /* TODO */ },
+                        onClick = {
+                            viewModel.downloadAppViewModel(apk, titulo, context, logo)
+                                  },
                         modifier = Modifier.width(180.dp)
                     ) {
                         Text("instalar")

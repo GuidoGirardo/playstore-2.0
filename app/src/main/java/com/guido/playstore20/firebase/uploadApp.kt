@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storage
+import java.net.URLEncoder
 
 fun uploadApp(apkUri: Uri, context: Context, title: String, description: String, logoUri: Uri) {
     val firestore = FirebaseFirestore.getInstance()
