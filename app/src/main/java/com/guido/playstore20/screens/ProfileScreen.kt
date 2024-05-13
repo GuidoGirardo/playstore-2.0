@@ -38,11 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
@@ -116,7 +116,6 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                     modifier = Modifier
                         .width(100.dp)
                         .height(100.dp)
-                        .padding(16.dp)
                         .background(Color.Red, RoundedCornerShape(8.dp))
                         .clickable {
                             logoLauncher.launch("image/*")
@@ -127,7 +126,8 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                         Image(
                             painter = rememberAsyncImagePainter(uri),
                             contentDescription = "logo",
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
                         )
                     } ?: run {
                         Icon(
@@ -149,7 +149,7 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                 horizontalArrangement = Arrangement.End
             ) {
                 if (apkUri != null && logo != null && title != "" && description != "") {
-                    Button(onClick = { uploadApkToFirebase(apkUri!!, context) }) {
+                    Button(onClick = { viewModel.uploadAppViewModel(apkUri!!, context) }) {
                         Text(text = "upload")
                     }
                 }
@@ -167,31 +167,5 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                 .clickable { navController.navigate(AppScreens.HomeScreen.route) },
             tint = contraste
         )
-    }
-}
-
-fun uploadApkToFirebase(apkUri: Uri, context: Context) {
-    val storageRef = Firebase.storage.reference.child("apks/caca")
-    val uploadTask = storageRef.putFile(apkUri)
-
-    uploadTask.continueWithTask { task ->
-        if (!task.isSuccessful) {
-            task.exception?.let {
-                throw it
-            }
-        }
-        storageRef.downloadUrl
-    }.addOnCompleteListener { task: Task<Uri> ->
-        if (task.isSuccessful) {
-            val downloadUri = task.result
-            // Handle successful upload
-            Toast.makeText(context, "APK uploaded successfully", Toast.LENGTH_SHORT).show()
-            // Muestra el enlace de descarga en un Toast o en otro lugar
-            Toast.makeText(context, "Download link: $downloadUri", Toast.LENGTH_LONG).show()
-            Log.i("xd", downloadUri.toString())
-        } else {
-            // Handle unsuccessful upload
-            Toast.makeText(context, "Upload failed: ${task.exception}", Toast.LENGTH_SHORT).show()
-        }
     }
 }
