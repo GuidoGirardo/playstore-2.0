@@ -81,5 +81,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
     // glide
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    // dropbox
+    // implementation("com.dropbox.core:dropbox-core-sdk:4.0.0")
 
 }

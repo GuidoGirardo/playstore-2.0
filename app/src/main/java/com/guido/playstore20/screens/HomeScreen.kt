@@ -33,13 +33,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.guido.playstore20.navigation.AppScreens
+import com.guido.playstore20.ui.theme.Purple40
+import com.guido.playstore20.ui.theme.contraste
 import com.guido.playstore20.viewmodel.PlaystoreViewModel
 
 @Composable
@@ -49,7 +50,9 @@ fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel) {
     var searchText by remember { mutableStateOf("") }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Purple40)
     ) {
         Column() {
             TextField(
@@ -61,6 +64,8 @@ fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                 label = { Text("search") },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clip(RoundedCornerShape(32.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyColumn {
@@ -109,18 +114,19 @@ fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel) {
             }
 
         }
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "profile button",
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-                    .size(72.dp)
-                    .background(Color.Yellow, RoundedCornerShape(50.dp))
-                    .scale(0.8f)
-                    .clickable { navController.navigate(AppScreens.ProfileScreen.route) }
-            )
-        }
+        Icon(
+            imageVector = Icons.Default.Person,
+            contentDescription = "profile button",
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(24.dp)
+                .size(72.dp)
+                .background(Purple40, RoundedCornerShape(50.dp))
+                .scale(0.8f)
+                .clickable { navController.navigate(AppScreens.ProfileScreen.route) },
+                tint = contraste
+        )
+    }
 
 }
 
@@ -144,7 +150,7 @@ fun appItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp)
-                .background(Color.Cyan)
+                .background(contraste)
                 .padding(16.dp)
         ) {
             GlideImage(
@@ -191,14 +197,14 @@ fun appItemApretado(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Green)
+                .background(contraste)
                 .padding(16.dp)
         ) {
             Row(
                 modifier = Modifier
-                .fillMaxWidth()
-            ){
-                Column(){
+                    .fillMaxWidth()
+            ) {
+                Column() {
                     GlideImage(
                         model = logo,
                         contentDescription = "logo",
@@ -207,26 +213,28 @@ fun appItemApretado(
                             .clip(RoundedCornerShape(8.dp)),
                         contentScale = ContentScale.Crop
                     )
-                    Text(empresa,
-                        modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Text(
+                        empresa,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 }
                 Column(
                     modifier = Modifier
                         .width(250.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
-                ){
+                ) {
                     Text(descargas)
                     Button(
                         onClick = { /* TODO */ },
                         modifier = Modifier.width(180.dp)
-                    ){
+                    ) {
                         Text("instalar")
                     }
                     Text(categoria)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Column(){
+            Column() {
                 Text(titulo)
                 Text(descripcion)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -247,8 +255,8 @@ fun appItemApretado(
                 Text("comentarios:")
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Column(){
-                    comentarios.forEach{
+                Column() {
+                    comentarios.forEach {
                         Text(it)
                     }
                 }
