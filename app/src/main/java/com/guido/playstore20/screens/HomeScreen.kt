@@ -1,8 +1,6 @@
 package com.guido.playstore20.screens
 
-import android.app.DownloadManager
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

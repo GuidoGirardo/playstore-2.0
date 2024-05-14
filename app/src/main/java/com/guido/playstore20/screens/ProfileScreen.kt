@@ -50,6 +50,9 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var logo by remember { mutableStateOf<Uri?>(null) }
+    var screenshot1 by remember { mutableStateOf<Uri?>(null) }
+    var screenshot2 by remember { mutableStateOf<Uri?>(null) }
+    var screenshot3 by remember { mutableStateOf<Uri?>(null) }
     var apkUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
     val apkLauncher =
@@ -59,6 +62,18 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
     val logoLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             logo = uri
+        }
+    val screenshot1Launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            screenshot1 = uri
+        }
+    val screenshot2Launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            screenshot2 = uri
+        }
+    val screenshot3Launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            screenshot3 = uri
         }
 
     Box(
@@ -72,7 +87,8 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                 .padding(24.dp)
                 .background(contraste, RoundedCornerShape(8.dp))
         ) {
-            Row(modifier = Modifier.padding(16.dp),
+            Row(
+                modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = { apkLauncher.launch("application/vnd.android.package-archive") }) {
@@ -91,21 +107,25 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                 value = title,
                 onValueChange = { title = it },
                 label = { Text("title") },
-                modifier = Modifier.padding(start = 16.dp).clip(RoundedCornerShape(16.dp))
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .clip(RoundedCornerShape(16.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = description,
                 onValueChange = { description = it },
                 label = { Text("description") },
-                modifier = Modifier.padding(start = 16.dp).clip(RoundedCornerShape(16.dp))
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .clip(RoundedCornerShape(16.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-            ){
-
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 Box(
                     modifier = Modifier
                         .width(80.dp)
@@ -119,7 +139,9 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                         Image(
                             painter = rememberAsyncImagePainter(uri),
                             contentDescription = "logo",
-                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp)),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
                             contentScale = ContentScale.Crop
                         )
                     } ?: run {
@@ -130,10 +152,88 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                         )
                     }
                 }
-
-
-
-
+                Spacer(modifier = Modifier.width(8.dp))
+                // screenshots
+                Box(
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(160.dp)
+                        .background(Color.Yellow, RoundedCornerShape(8.dp))
+                        .clickable {
+                            screenshot1Launcher.launch("image/*")
+                        }
+                ){
+                    screenshot1?.let { uri ->
+                        Image(
+                            painter = rememberAsyncImagePainter(uri),
+                            contentDescription = "logo",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    } ?: run {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "select screenshot",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                Box(
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(160.dp)
+                        .background(Color.Yellow, RoundedCornerShape(8.dp))
+                        .clickable {
+                            screenshot2Launcher.launch("image/*")
+                        }
+                ){
+                    screenshot2?.let { uri ->
+                        Image(
+                            painter = rememberAsyncImagePainter(uri),
+                            contentDescription = "logo",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    } ?: run {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "select screenshot",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                Box(
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(160.dp)
+                        .background(Color.Yellow, RoundedCornerShape(8.dp))
+                        .clickable {
+                            screenshot3Launcher.launch("image/*")
+                        }
+                ){
+                    screenshot3?.let { uri ->
+                        Image(
+                            painter = rememberAsyncImagePainter(uri),
+                            contentDescription = "logo",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    } ?: run {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "select screenshot",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
             }
             Row(
                 modifier = Modifier
@@ -141,8 +241,19 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.End
             ) {
-                if (apkUri != null && logo != null && title != "" && description != "") {
-                    Button(onClick = { viewModel.uploadAppViewModel(apkUri!!, context, title, description, logo!!) }) {
+                if (apkUri != null && logo != null && title != "" && description != "" && (screenshot1 != null || screenshot2 != null || screenshot3 != null)) {
+                    Button(onClick = {
+                        viewModel.uploadAppViewModel(
+                            apkUri!!,
+                            context,
+                            title,
+                            description,
+                            logo!!,
+                            screenshot1 ?: Uri.EMPTY,
+                            screenshot2 ?: Uri.EMPTY,
+                            screenshot3 ?: Uri.EMPTY
+                        )
+                    }) {
                         Text(text = "upload")
                     }
                 }

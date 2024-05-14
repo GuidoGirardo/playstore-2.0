@@ -5,13 +5,26 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.tasks.Task
-import com.google.firebase.Firebase
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.storage
-import java.net.URLEncoder
 
-fun uploadApp(apkUri: Uri, context: Context, title: String, description: String, logoUri: Uri) {
+fun uploadApp(apkUri: Uri, context: Context, title: String, description: String, logoUri: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?) {
+    Log.i("xd", screenshot1.toString())
+    Log.i("xd", screenshot2.toString())
+    Log.i("xd", screenshot3.toString())
+
+    val screenshotUris = mutableListOf<Uri>()
+    for (screenshot in listOf(screenshot1, screenshot2, screenshot3)) {
+        screenshot?.let {
+            if (it != Uri.EMPTY) {
+                screenshotUris.add(it)
+            }
+        }
+    }
+    Log.i("xd", screenshotUris.toString())
+
+
     val firestore = FirebaseFirestore.getInstance()
     val appsCollection = firestore.collection("apps")
 
@@ -20,7 +33,6 @@ fun uploadApp(apkUri: Uri, context: Context, title: String, description: String,
         if (queryTask.isSuccessful) {
             val querySnapshot = queryTask.result
             if (querySnapshot != null && querySnapshot.isEmpty) {
-                // No existe ningún documento con el mismo título, podemos proceder con la carga del APK y el logo
                 val storage = FirebaseStorage.getInstance()
                 val storageRef = storage.reference
                 val apkRef = storageRef.child("apks/$title")
@@ -54,20 +66,54 @@ fun uploadApp(apkUri: Uri, context: Context, title: String, description: String,
                             if (logoTask.isSuccessful) {
                                 val logoDownloadUri = logoTask.result
 
-                                // Guardar los datos en Firestore
-                                val appData = hashMapOf(
-                                    "titulo" to title,
-                                    "descripcion" to description,
-                                    "apk" to apkDownloadUri.toString(),
-                                    "logo" to logoDownloadUri.toString()
-                                )
+                                // Subir capturas de pantalla y obtener sus URLs
+                                val screenshotUrls = mutableListOf<String>()
+                                val screenshotTasks = mutableListOf<Task<Uri>>()
+                                for (screenshotUri in screenshotUris) {
+                                    val screenshotRef = storageRef.child("screenshots/$title/${screenshotUri.lastPathSegment}")
+                                    val screenshotUploadTask = screenshotRef.putFile(screenshotUri)
+                                    screenshotTasks.add(screenshotUploadTask.continueWithTask { task ->
+                                        if (!task.isSuccessful) {
+                                            task.exception?.let {
+                                                throw it
+                                            }
+                                        }
+                                        screenshotRef.downloadUrl
+                                    })
+                                }
 
-                                appsCollection.add(appData).addOnSuccessListener {
-                                    // Handle successful app data insertion
-                                    Toast.makeText(context, "App data uploaded successfully", Toast.LENGTH_SHORT).show()
-                                }.addOnFailureListener { exception ->
-                                    // Handle unsuccessful app data insertion
-                                    Toast.makeText(context, "Error uploading app data: $exception", Toast.LENGTH_SHORT).show()
+                                Tasks.whenAllComplete(screenshotTasks).addOnCompleteListener { screenshotTask ->
+                                    if (screenshotTask.isSuccessful) {
+                                        for (result in screenshotTask.result) {
+                                            if (result.isSuccessful) {
+                                                val screenshotUri = result.result
+                                                screenshotUri?.let {
+                                                    screenshotUrls.add(it.toString())
+                                                }
+                                            }
+                                        }
+
+                                        // Guardar los datos en Firestore
+                                        val appData = hashMapOf(
+                                            "titulo" to title,
+                                            "descripcion" to description,
+                                            "apk" to apkDownloadUri.toString(),
+                                            "logo" to logoDownloadUri.toString(),
+                                            "capturas" to screenshotUrls,
+                                            "descargas" to 0
+                                        )
+
+                                        appsCollection.add(appData).addOnSuccessListener {
+                                            // Handle successful app data insertion
+                                            Toast.makeText(context, "App data uploaded successfully", Toast.LENGTH_SHORT).show()
+                                        }.addOnFailureListener { exception ->
+                                            // Handle unsuccessful app data insertion
+                                            Toast.makeText(context, "Error uploading app data: $exception", Toast.LENGTH_SHORT).show()
+                                        }
+                                    } else {
+                                        // Handle screenshot upload failure
+                                        Toast.makeText(context, "Error uploading screenshots: ${screenshotTask.exception}", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                             } else {
                                 // Handle logo upload failure
