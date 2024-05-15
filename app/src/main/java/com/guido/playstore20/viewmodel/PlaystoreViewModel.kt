@@ -2,6 +2,8 @@ package com.guido.playstore20.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +17,8 @@ class PlaystoreViewModel: ViewModel() {
     val appsList: LiveData<List<Map<String, Any>>> = _appsList
 
     private val allApps: MutableList<Map<String, Any>> = mutableListOf()
+
+    var currentUser: MutableState<String?> = mutableStateOf(null)
 
     init {
         getApps { apps ->
@@ -33,8 +37,8 @@ class PlaystoreViewModel: ViewModel() {
         _appsList.value = filteredApps
     }
 
-    fun uploadAppViewModel(apkUri: Uri, context: Context, title: String, description: String, logo: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?){
-        uploadApp(apkUri, context, title, description, logo, screenshot1, screenshot2, screenshot3)
+    fun uploadAppViewModel(apkUri: Uri, context: Context, title: String, description: String, logo: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?, categoria: String, user: String){
+        uploadApp(apkUri, context, title, description, logo, screenshot1, screenshot2, screenshot3, categoria, user)
     }
 
     fun downloadAppViewModel(apkUrl: String, appName: String, context: Context, logo: String){

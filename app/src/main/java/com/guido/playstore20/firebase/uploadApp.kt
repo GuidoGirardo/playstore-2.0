@@ -9,7 +9,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
-fun uploadApp(apkUri: Uri, context: Context, title: String, description: String, logoUri: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?) {
+fun uploadApp(apkUri: Uri, context: Context, title: String, description: String, logoUri: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?, categoria: String, user:String) {
     Log.i("xd", screenshot1.toString())
     Log.i("xd", screenshot2.toString())
     Log.i("xd", screenshot3.toString())
@@ -97,6 +97,8 @@ fun uploadApp(apkUri: Uri, context: Context, title: String, description: String,
                                         val appData = hashMapOf(
                                             "titulo" to title,
                                             "descripcion" to description,
+                                            "categoria" to categoria,
+                                            "empresa" to user,
                                             "apk" to apkDownloadUri.toString(),
                                             "logo" to logoDownloadUri.toString(),
                                             "capturas" to screenshotUrls,

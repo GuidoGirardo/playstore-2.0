@@ -21,9 +21,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -44,6 +47,7 @@ import com.guido.playstore20.ui.theme.Purple40
 import com.guido.playstore20.ui.theme.contraste
 import com.guido.playstore20.viewmodel.PlaystoreViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel, context: Context) {
 
@@ -66,7 +70,10 @@ fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel, cont
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(32.dp))
+                    .clip(RoundedCornerShape(32.dp)),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = contraste
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyColumn {
@@ -127,7 +134,11 @@ fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel, cont
                 .size(72.dp)
                 .background(Purple40, RoundedCornerShape(50.dp))
                 .scale(0.8f)
-                .clickable { navController.navigate(AppScreens.ProfileScreen.route) },
+                .clickable {
+                    Log.i("xd", viewModel.currentUser.toString())
+                    if(viewModel.currentUser.value == null) navController.navigate(AppScreens.LoginScreen.route)
+                    else navController.navigate(AppScreens.ProfileScreen.route)
+                           },
                 tint = contraste
         )
     }
@@ -237,7 +248,7 @@ fun appItemApretado(
                                   },
                         modifier = Modifier.width(180.dp)
                     ) {
-                        Text("instalar")
+                        Text("install")
                     }
                     Text(categoria)
                 }
@@ -261,7 +272,7 @@ fun appItemApretado(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("comentarios:")
+                Text("comments:")
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Column() {

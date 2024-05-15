@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.guido.playstore20.screens.HomeScreen
 import com.guido.playstore20.screens.ProfileScreen
+import com.guido.playstore20.screens.RegisterScreen
+import com.guido.playstore20.screens.LoginScreen
 import com.guido.playstore20.viewmodel.PlaystoreViewModel
 
 @Composable
@@ -19,6 +21,12 @@ fun AppNavigation(viewModel: PlaystoreViewModel, context: Context){
         }
         composable(route = AppScreens.ProfileScreen.route) {
             ProfileScreen(navController, viewModel)
+        }
+        composable(route = AppScreens.LoginScreen.route) {
+            LoginScreen(navController, viewModel)
+        }
+        composable(route = AppScreens.RegisterScreen.route) {
+            RegisterScreen(navController)
         }
     }
 
