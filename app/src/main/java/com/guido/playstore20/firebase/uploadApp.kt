@@ -8,6 +8,10 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 fun uploadApp(apkUri: Uri, context: Context, title: String, description: String, logoUri: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?, categoria: String, user:String) {
     Log.i("xd", screenshot1.toString())
@@ -107,7 +111,7 @@ fun uploadApp(apkUri: Uri, context: Context, title: String, description: String,
 
                                         appsCollection.add(appData).addOnSuccessListener {
                                             // Handle successful app data insertion
-                                            Toast.makeText(context, "App data uploaded successfully", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "App data uploaded successfully", Toast.LENGTH_LONG).show()
                                         }.addOnFailureListener { exception ->
                                             // Handle unsuccessful app data insertion
                                             Toast.makeText(context, "Error uploading app data: $exception", Toast.LENGTH_SHORT).show()

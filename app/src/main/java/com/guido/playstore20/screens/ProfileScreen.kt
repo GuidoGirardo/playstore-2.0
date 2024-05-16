@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -30,7 +32,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,6 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.guido.playstore20.firebase.getAppsProfile
 import com.guido.playstore20.navigation.AppScreens
 import com.guido.playstore20.ui.theme.Purple40
 import com.guido.playstore20.ui.theme.contraste
@@ -51,6 +56,9 @@ import com.guido.playstore20.viewmodel.PlaystoreViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
+    val apps by viewModel.appsListP.observeAsState(emptyList())
+    viewModel.getAppsProfileVM(viewModel.currentUser.value.toString())
+
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var logo by remember { mutableStateOf<Uri?>(null) }
@@ -89,9 +97,7 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
             Text(
                 text = "Hello ${viewModel.currentUser.value}!",
                 color = contraste,
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Column(
                 modifier = Modifier
@@ -323,11 +329,17 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                 }
             }
 
+            LazyColumn {
+                // apps del usuario, que se actualicen automaticamente
+                // cuando el usuario suba una nueva app
+                items(apps) { app ->
+                    // Aquí puedes mostrar cada elemento de la lista de aplicaciones
+                    // Por ejemplo, si "title" es el campo que contiene el nombre de la aplicación:
+                    val titulo = app["titulo"]?.toString() ?: ""
+                    Text(titulo, modifier = Modifier.padding(start = 16.dp),
+                        color = contraste)
 
-            Column {
-                Text("1")
-                Text("2")
-                Text("3")
+                }
             }
 
         }

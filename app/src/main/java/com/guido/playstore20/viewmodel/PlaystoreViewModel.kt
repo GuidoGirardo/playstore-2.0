@@ -2,6 +2,7 @@ package com.guido.playstore20.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -9,16 +10,28 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.guido.playstore20.firebase.downloadApk
 import com.guido.playstore20.firebase.getApps
+import com.guido.playstore20.firebase.getAppsProfile
 import com.guido.playstore20.firebase.uploadApp
 
 class PlaystoreViewModel: ViewModel() {
 
     private val _appsList = MutableLiveData<List<Map<String, Any>>>()
     val appsList: LiveData<List<Map<String, Any>>> = _appsList
-
     private val allApps: MutableList<Map<String, Any>> = mutableListOf()
 
     var currentUser: MutableState<String?> = mutableStateOf(null)
+
+    private val _appsListP = MutableLiveData<List<Map<String, Any>>>()
+    val appsListP: LiveData<List<Map<String, Any>>> = _appsListP
+    private val allAppsP: MutableList<Map<String, Any>> = mutableListOf()
+
+    fun getAppsProfileVM(user: String) {
+        getAppsProfile(user){ apps ->
+            allAppsP.clear()
+            allAppsP.addAll(apps)
+            _appsListP.value = allAppsP
+        }
+    }
 
     init {
         getApps { apps ->
