@@ -5,7 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun getAppsProfile(user: String, postListCallback: (List<Map<String, Any>>) -> Unit) {
     val db = FirebaseFirestore.getInstance()
     db.collection("apps")
-        .whereEqualTo("empresa", user) // Suponiendo que tienes un campo "username" en tus documentos de aplicación
+        .whereEqualTo("empresa", user)
         .addSnapshotListener { snapshot, exception ->
         if (exception != null) return@addSnapshotListener
         val posts = mutableListOf<Map<String, Any>>()

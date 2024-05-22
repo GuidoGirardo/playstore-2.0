@@ -53,94 +53,95 @@ fun HomeScreen(navController: NavController, viewModel: PlaystoreViewModel, cont
     val appsList by viewModel.appsList.observeAsState(emptyList())
     var searchText by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Purple40)
-    ) {
-        Column() {
-            TextField(
-                value = searchText,
-                onValueChange = { newValue ->
-                    searchText = newValue
-                    viewModel.searchApp(newValue)
-                },
-                label = { Text("search") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .clip(RoundedCornerShape(32.dp)),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = contraste
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn {
-                items(appsList) { post ->
-                    val apk = post["apk"]?.toString() ?: ""
-                    val capturas = (post["capturas"] as? List<String>) ?: emptyList()
-                    val categoria = post["categoria"]?.toString() ?: ""
-                    val comentarios = (post["comentarios"] as? List<String>) ?: emptyList()
-                    val descargas = post["descargas"]?.toString() ?: ""
-                    val descripcion = post["descripcion"]?.toString() ?: ""
-                    val logo = post["logo"]?.toString() ?: ""
-                    val titulo = post["titulo"]?.toString() ?: ""
-                    val empresa = post["empresa"]?.toString() ?: ""
-
-                    Log.i(
-                        "xd",
-                        "$apk - $capturas - $categoria - $comentarios - " +
-                                "$descargas - $descripcion - $logo - $titulo"
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Purple40)
+        ) {
+            Column() {
+                TextField(
+                    value = searchText,
+                    onValueChange = { newValue ->
+                        searchText = newValue
+                        viewModel.searchApp(newValue)
+                    },
+                    label = { Text("search") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clip(RoundedCornerShape(32.dp)),
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = contraste
                     )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn {
+                    items(appsList) { post ->
+                        val apk = post["apk"]?.toString() ?: ""
+                        val capturas = (post["capturas"] as? List<String>) ?: emptyList()
+                        val categoria = post["categoria"]?.toString() ?: ""
+                        val comentarios = (post["comentarios"] as? List<String>) ?: emptyList()
+                        val descargas = post["descargas"]?.toString() ?: ""
+                        val descripcion = post["descripcion"]?.toString() ?: ""
+                        val logo = post["logo"]?.toString() ?: ""
+                        val titulo = post["titulo"]?.toString() ?: ""
+                        val empresa = post["empresa"]?.toString() ?: ""
 
-                    var isExpanded by remember { mutableStateOf(false) }
+                        Log.i(
+                            "xd",
+                            "$apk - $capturas - $categoria - $comentarios - " +
+                                    "$descargas - $descripcion - $logo - $titulo"
+                        )
 
-                    if (isExpanded) {
-                        appItemApretado(
-                            onClick = { isExpanded = false },
-                            titulo = titulo,
-                            descripcion = descripcion,
-                            descargas = descargas,
-                            logo = logo,
-                            categoria = categoria,
-                            empresa = empresa,
-                            capturas = capturas,
-                            comentarios = comentarios,
-                            apk = apk,
-                            viewModel = viewModel,
-                            context = context
-                        )
-                    } else {
-                        appItem(
-                            titulo = titulo,
-                            descripcion = descripcion,
-                            descargas = descargas,
-                            logo = logo,
-                            categoria = categoria,
-                            onClick = { isExpanded = true }
-                        )
+                        var isExpanded by remember { mutableStateOf(false) }
+
+                        if (isExpanded) {
+                            appItemApretado(
+                                onClick = { isExpanded = false },
+                                titulo = titulo,
+                                descripcion = descripcion,
+                                descargas = descargas,
+                                logo = logo,
+                                categoria = categoria,
+                                empresa = empresa,
+                                capturas = capturas,
+                                comentarios = comentarios,
+                                apk = apk,
+                                viewModel = viewModel,
+                                context = context
+                            )
+                        } else {
+                            appItem(
+                                titulo = titulo,
+                                descripcion = descripcion,
+                                descargas = descargas,
+                                logo = logo,
+                                categoria = categoria,
+                                onClick = { isExpanded = true }
+                            )
+                        }
                     }
                 }
-            }
 
-        }
-        Icon(
-            imageVector = Icons.Default.Person,
-            contentDescription = "profile button",
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp)
-                .size(72.dp)
-                .background(Purple40, RoundedCornerShape(50.dp))
-                .scale(0.8f)
-                .clickable {
-                    Log.i("xd", viewModel.currentUser.toString())
-                    if(viewModel.currentUser.value == null) navController.navigate(AppScreens.LoginScreen.route)
-                    else navController.navigate(AppScreens.ProfileScreen.route)
-                           },
+            }
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "profile button",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(24.dp)
+                    .size(72.dp)
+                    .background(Purple40, RoundedCornerShape(50.dp))
+                    .scale(0.8f)
+                    .clickable {
+                        Log.i("xd", viewModel.currentUser.toString())
+                        if (viewModel.currentUser.value == null) navController.navigate(AppScreens.LoginScreen.route)
+                        else navController.navigate(AppScreens.ProfileScreen.route)
+                    },
                 tint = contraste
-        )
-    }
+            )
+        }
+
 
 }
 

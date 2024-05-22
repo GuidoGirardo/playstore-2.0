@@ -50,8 +50,8 @@ class PlaystoreViewModel: ViewModel() {
         _appsList.value = filteredApps
     }
 
-    fun uploadAppViewModel(apkUri: Uri, context: Context, title: String, description: String, logo: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?, categoria: String, user: String){
-        uploadApp(apkUri, context, title, description, logo, screenshot1, screenshot2, screenshot3, categoria, user)
+    fun uploadAppViewModel(apkUri: Uri, context: Context, title: String, description: String, logo: Uri, screenshot1: Uri?, screenshot2: Uri?, screenshot3: Uri?, categoria: String, user: String, viewModel: PlaystoreViewModel){
+        uploadApp(apkUri, context, title, description, logo, screenshot1, screenshot2, screenshot3, categoria, user, viewModel)
     }
 
     fun downloadAppViewModel(apkUrl: String, appName: String, context: Context, logo: String){

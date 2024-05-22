@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -47,6 +48,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.guido.playstore20.firebase.getAppsProfile
 import com.guido.playstore20.navigation.AppScreens
 import com.guido.playstore20.ui.theme.Purple40
@@ -88,272 +91,343 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
             screenshot3 = uri
         }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Purple40)
-    ) {
-        Column() {
-            Text(
-                text = "Hello ${viewModel.currentUser.value}!",
-                color = contraste,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .background(contraste, RoundedCornerShape(8.dp))
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(onClick = { apkLauncher.launch("application/vnd.android.package-archive") }) {
-                        Text(text = "select apk")
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = if (apkUri != null) {
-                            "${apkUri?.lastPathSegment}"
-                        } else {
-                            "select an .apk"
-                        }
-                    )
-                }
-                TextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("title") },
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("description") },
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    // logo
-                    Box(
-                        modifier = Modifier
-                            .width(60.dp)
-                            .height(60.dp)
-                            .background(Purple40, RoundedCornerShape(8.dp))
-                            .clickable {
-                                logoLauncher.launch("image/*")
-                            }
-                    ) {
-                        logo?.let { uri ->
-                            Image(
-                                painter = rememberAsyncImagePainter(uri),
-                                contentDescription = "logo",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                        } ?: run {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "select logo",
-                                modifier = Modifier.align(Alignment.Center),
-                                tint = contraste
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    // screenshots
-                    Box(
-                        modifier = Modifier
-                            .width(70.dp)
-                            .height(160.dp)
-                            .background(Purple40, RoundedCornerShape(8.dp))
-                            .clickable {
-                                screenshot1Launcher.launch("image/*")
-                            }
-                    ) {
-                        screenshot1?.let { uri ->
-                            Image(
-                                painter = rememberAsyncImagePainter(uri),
-                                contentDescription = "logo",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                        } ?: run {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "select screenshot",
-                                modifier = Modifier.align(Alignment.Center),
-                                tint = contraste
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Box(
-                        modifier = Modifier
-                            .width(70.dp)
-                            .height(160.dp)
-                            .background(Purple40, RoundedCornerShape(8.dp))
-                            .clickable {
-                                screenshot2Launcher.launch("image/*")
-                            }
-                    ) {
-                        screenshot2?.let { uri ->
-                            Image(
-                                painter = rememberAsyncImagePainter(uri),
-                                contentDescription = "logo",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                        } ?: run {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "select screenshot",
-                                modifier = Modifier.align(Alignment.Center),
-                                tint = contraste
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Box(
-                        modifier = Modifier
-                            .width(70.dp)
-                            .height(160.dp)
-                            .background(Purple40, RoundedCornerShape(8.dp))
-                            .clickable {
-                                screenshot3Launcher.launch("image/*")
-                            }
-                    ) {
-                        screenshot3?.let { uri ->
-                            Image(
-                                painter = rememberAsyncImagePainter(uri),
-                                contentDescription = "logo",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(8.dp)),
-                                contentScale = ContentScale.Crop
-                            )
-                        } ?: run {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "select screenshot",
-                                modifier = Modifier.align(Alignment.Center),
-                                tint = contraste
-                            )
-                        }
-                    }
-                }
+    var showAlternateColumn by remember { mutableStateOf(true) }
 
-                var isExpanded by remember { mutableStateOf(false) }
-                var categoria by remember { mutableStateOf("") }
-
-                ExposedDropdownMenuBox(
-                    expanded = isExpanded,
-                    onExpandedChange = { isExpanded = it },
-                    modifier = Modifier.padding(start = 16.dp).clip(RoundedCornerShape(16.dp))
-                ) {
-                    TextField(
-                        value = categoria,
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                        },
-                        modifier = Modifier.menuAnchor()
-                    )
-                    ExposedDropdownMenu(
-                        expanded = isExpanded,
-                        onDismissRequest = { isExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text("app")
-                            },
-                            onClick = {
-                                categoria = "app"
-                                isExpanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = {
-                                Text("game")
-                            },
-                            onClick = {
-                                categoria = "game"
-                                isExpanded = false
-                            }
-                        )
-                    }
-                }
+    // Function to toggle the state when clicked
+    val toggleShowAlternateColumn: () -> Unit = {
+        showAlternateColumn = !showAlternateColumn
+    }
 
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    if (apkUri != null && logo != null && title != "" && description != "" && (screenshot1 != null || screenshot2 != null || screenshot3 != null) && categoria != "" && viewModel.currentUser.value != null) {
-                        Button(onClick = {
-                            viewModel.uploadAppViewModel(
-                                apkUri!!,
-                                context,
-                                title,
-                                description,
-                                logo!!,
-                                screenshot1 ?: Uri.EMPTY,
-                                screenshot2 ?: Uri.EMPTY,
-                                screenshot3 ?: Uri.EMPTY,
-                                categoria,
-                                viewModel.currentUser.value.toString()
-                            )
-                        }) {
-                            Text(text = "upload")
-                        }
-                    }
-                }
-            }
-
-            LazyColumn {
-                // apps del usuario, que se actualicen automaticamente
-                // cuando el usuario suba una nueva app
-                items(apps) { app ->
-                    // Aquí puedes mostrar cada elemento de la lista de aplicaciones
-                    // Por ejemplo, si "title" es el campo que contiene el nombre de la aplicación:
-                    val titulo = app["titulo"]?.toString() ?: ""
-                    Text(titulo, modifier = Modifier.padding(start = 16.dp),
-                        color = contraste)
-
-                }
-            }
-
-        }
-        Icon(
-            imageVector = Icons.Default.Home,
-            contentDescription = "home button",
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp)
-                .size(72.dp)
-                .background(Purple40, RoundedCornerShape(50.dp))
-                .scale(0.8f)
-                .clickable { navController.navigate(AppScreens.HomeScreen.route) },
-            tint = contraste
-        )
+                .fillMaxSize()
+                .background(Purple40)
+        ) {
+            Column() {
+                Text(
+                    text = "Hello ${viewModel.currentUser.value}!",
+                    color = contraste,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                if(showAlternateColumn) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .background(contraste, RoundedCornerShape(8.dp))
+                            .clickable(onClick = toggleShowAlternateColumn)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Button(onClick = { apkLauncher.launch("application/vnd.android.package-archive") }) {
+                                Text(text = "select apk")
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = if (apkUri != null) {
+                                    "${apkUri?.lastPathSegment}"
+                                } else {
+                                    "select an .apk"
+                                }
+                            )
+                        }
+                        TextField(
+                            value = title,
+                            onValueChange = { title = it },
+                            label = { Text("title") },
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TextField(
+                            value = description,
+                            onValueChange = { description = it },
+                            label = { Text("description") },
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            // logo
+                            Box(
+                                modifier = Modifier
+                                    .width(60.dp)
+                                    .height(60.dp)
+                                    .background(Purple40, RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        logoLauncher.launch("image/*")
+                                    }
+                            ) {
+                                logo?.let { uri ->
+                                    Image(
+                                        painter = rememberAsyncImagePainter(uri),
+                                        contentDescription = "logo",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } ?: run {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "select logo",
+                                        modifier = Modifier.align(Alignment.Center),
+                                        tint = contraste
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            // screenshots
+                            Box(
+                                modifier = Modifier
+                                    .width(70.dp)
+                                    .height(160.dp)
+                                    .background(Purple40, RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        screenshot1Launcher.launch("image/*")
+                                    }
+                            ) {
+                                screenshot1?.let { uri ->
+                                    Image(
+                                        painter = rememberAsyncImagePainter(uri),
+                                        contentDescription = "logo",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } ?: run {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "select screenshot",
+                                        modifier = Modifier.align(Alignment.Center),
+                                        tint = contraste
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .width(70.dp)
+                                    .height(160.dp)
+                                    .background(Purple40, RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        screenshot2Launcher.launch("image/*")
+                                    }
+                            ) {
+                                screenshot2?.let { uri ->
+                                    Image(
+                                        painter = rememberAsyncImagePainter(uri),
+                                        contentDescription = "logo",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } ?: run {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "select screenshot",
+                                        modifier = Modifier.align(Alignment.Center),
+                                        tint = contraste
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .width(70.dp)
+                                    .height(160.dp)
+                                    .background(Purple40, RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        screenshot3Launcher.launch("image/*")
+                                    }
+                            ) {
+                                screenshot3?.let { uri ->
+                                    Image(
+                                        painter = rememberAsyncImagePainter(uri),
+                                        contentDescription = "logo",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } ?: run {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "select screenshot",
+                                        modifier = Modifier.align(Alignment.Center),
+                                        tint = contraste
+                                    )
+                                }
+                            }
+                        }
+
+                        var isExpanded by remember { mutableStateOf(false) }
+                        var categoria by remember { mutableStateOf("") }
+
+                        ExposedDropdownMenuBox(
+                            expanded = isExpanded,
+                            onExpandedChange = { isExpanded = it },
+                            modifier = Modifier.padding(start = 16.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                        ) {
+                            TextField(
+                                value = categoria,
+                                onValueChange = {},
+                                readOnly = true,
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                                },
+                                modifier = Modifier.menuAnchor()
+                            )
+                            ExposedDropdownMenu(
+                                expanded = isExpanded,
+                                onDismissRequest = { isExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text("app")
+                                    },
+                                    onClick = {
+                                        categoria = "app"
+                                        isExpanded = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = {
+                                        Text("game")
+                                    },
+                                    onClick = {
+                                        categoria = "game"
+                                        isExpanded = false
+                                    }
+                                )
+                            }
+                        }
+
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            if (apkUri != null && logo != null && title != "" && description != "" && (screenshot1 != null || screenshot2 != null || screenshot3 != null) && categoria != "" && viewModel.currentUser.value != null) {
+                                Button(onClick = {
+                                    viewModel.uploadAppViewModel(
+                                        apkUri!!,
+                                        context,
+                                        title,
+                                        description,
+                                        logo!!,
+                                        screenshot1 ?: Uri.EMPTY,
+                                        screenshot2 ?: Uri.EMPTY,
+                                        screenshot3 ?: Uri.EMPTY,
+                                        categoria,
+                                        viewModel.currentUser.value.toString(),
+                                        viewModel
+                                    )
+                                }) {
+                                    Text(text = "upload")
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    Text("click here to upload app", modifier = Modifier.fillMaxWidth().clickable(onClick = toggleShowAlternateColumn).padding(16.dp),
+                        color = contraste
+                    )
+                }
+
+                LazyColumn {
+                    // apps del usuario, que se actualicen automaticamente
+                    // cuando el usuario suba una nueva app
+                    items(apps) { app ->
+                        // Aquí puedes mostrar cada elemento de la lista de aplicaciones
+                        // Por ejemplo, si "title" es el campo que contiene el nombre de la aplicación:
+                        val titulo = app["titulo"]?.toString() ?: ""
+                        val descripcion = app["descripcion"]?.toString() ?: ""
+                        val logo = app["logo"]?.toString() ?: ""
+                        val descargas = app["descargas"]?.toString() ?: ""
+                        val categoria = app["categoria"]?.toString() ?: ""
+
+                        appsProfile(
+                            titulo = titulo,
+                            descripcion = descripcion,
+                            descargas = descargas,
+                            logo = logo,
+                            categoria = categoria
+                        )
+
+                    }
+                }
+
+            }
+            Icon(
+                imageVector = Icons.Default.Home,
+                contentDescription = "home button",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(24.dp)
+                    .size(72.dp)
+                    .background(Purple40, RoundedCornerShape(50.dp))
+                    .scale(0.8f)
+                    .clickable { navController.navigate(AppScreens.HomeScreen.route) },
+                tint = contraste
+            )
+        }
+
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun appsProfile(
+    titulo: String,
+    descripcion: String,
+    descargas: String,
+    logo: String,
+    categoria: String
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .background(contraste)
+                .padding(16.dp)
+        ) {
+            GlideImage(
+                model = logo,
+                contentDescription = "logo",
+                modifier = Modifier
+                    .size(88.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column() {
+                Text(titulo)
+                Text(descripcion)
+                Row() {
+                    Text(descargas)
+                    Spacer(modifier = Modifier.width(32.dp))
+                    Text(categoria)
+                }
+            }
+        }
     }
 }
