@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -43,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -366,7 +368,8 @@ fun ProfileScreen(navController: NavController, viewModel: PlaystoreViewModel) {
                             descripcion = descripcion,
                             descargas = descargas,
                             logo = logo,
-                            categoria = categoria
+                            categoria = categoria,
+                            onClick = { viewModel.deleteAppVM(titulo = titulo, context = context) }
                         )
 
                     }
@@ -396,7 +399,8 @@ fun appsProfile(
     descripcion: String,
     descargas: String,
     logo: String,
-    categoria: String
+    categoria: String,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -426,6 +430,18 @@ fun appsProfile(
                     Text(descargas)
                     Spacer(modifier = Modifier.width(32.dp))
                     Text(categoria)
+                    Spacer(modifier = Modifier.width(32.dp))
+                    Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "home button",
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(56.dp)
+                                .background(Purple40, RoundedCornerShape(8.dp))
+                                .scale(1f)
+                                .clickable{ onClick() },
+                            tint = Color.Red
+                    )
                 }
             }
         }

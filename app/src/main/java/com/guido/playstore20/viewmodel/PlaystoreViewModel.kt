@@ -2,12 +2,12 @@ package com.guido.playstore20.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.guido.playstore20.firebase.deleteApp
 import com.guido.playstore20.firebase.downloadApk
 import com.guido.playstore20.firebase.getApps
 import com.guido.playstore20.firebase.getAppsProfile
@@ -31,6 +31,10 @@ class PlaystoreViewModel: ViewModel() {
             allAppsP.addAll(apps)
             _appsListP.value = allAppsP
         }
+    }
+
+    fun deleteAppVM(titulo: String, context: Context){
+        deleteApp(titulo, context)
     }
 
     init {

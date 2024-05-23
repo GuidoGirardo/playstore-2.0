@@ -74,8 +74,8 @@ fun uploadApp(apkUri: Uri, context: Context, title: String, description: String,
                                 // Subir capturas de pantalla y obtener sus URLs
                                 val screenshotUrls = mutableListOf<String>()
                                 val screenshotTasks = mutableListOf<Task<Uri>>()
-                                for (screenshotUri in screenshotUris) {
-                                    val screenshotRef = storageRef.child("screenshots/$title/${screenshotUri.lastPathSegment}")
+                                for ((index, screenshotUri) in screenshotUris.withIndex()) {
+                                    val screenshotRef = storageRef.child("screenshots/$title/$title$index")
                                     val screenshotUploadTask = screenshotRef.putFile(screenshotUri)
                                     screenshotTasks.add(screenshotUploadTask.continueWithTask { task ->
                                         if (!task.isSuccessful) {
